@@ -29,11 +29,21 @@ const Schedule = props => {
     const groupedByDay = groupBy(props.postseasonGames, game =>
       new Date(game.gameDate).toDateString(),
     );
-    setGrouped(Array.from(groupedByDay.values()));
+    setGrouped(groupedByDay);
   }, [props.postseasonGames]);
 
   return (
     <div className='schedule'>
+      {Array.from(grouped).map(group => {
+        return (
+          <div key={group[0]}>
+            <h1>{group[0]}</h1>
+            {group[1].map(game => (
+              <p>{game.gamePk}</p>
+            ))}
+          </div>
+        );
+      })}
       {/* <List
         itemLayout='horizontal'
         // pagination={{
