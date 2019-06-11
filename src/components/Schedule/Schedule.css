@@ -1,5 +1,38 @@
 .schedule {
   text-align: left;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+
+.scheduleTitle {
+  text-align: center;
+  line-height: 0.5;
+}
+
+.scheduleTitle span {
+  display: inline-block;
+  position: relative;
+}
+
+.scheduleTitle span:before,
+.scheduleTitle span:after {
+  content: '';
+  position: absolute;
+  height: 20px;
+  border-bottom: 1px solid #c2c2c2;
+  top: 0;
+  width: 100%;
+}
+
+.scheduleTitle span:before {
+  right: 100%;
+  margin-right: 15px;
+}
+.scheduleTitle span:after {
+  left: 100%;
+  margin-left: 15px;
 }
 
 .gameDate {
@@ -18,19 +51,12 @@
 }
 
 .winningScore {
-  font-weight: 800;
+  font-weight: 700;
 }
 
-/* .awayTeam, .homeTeam {
-  width: 210px;
-  display: inline-block;
+@media only screen and (max-width: 768px) {
+  .scheduleTitle span:before,
+  .scheduleTitle span:after {
+    width: 0;
+  }
 }
-
-.homeTeam {
-  margin-left: 20px;
-}
-
-.gameTime {
-  width: 100px;
-  display: inline-block;
-} */
