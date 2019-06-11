@@ -1,3 +1,36 @@
 .schedule {
   text-align: left;
 }
+
+.gameDate {
+  padding-top: 20px;
+}
+
+.gameDateTitle {
+  border-bottom: 1px solid #c2c2c2;
+  padding-bottom: 8px;
+}
+
+.matchupText {
+  color: black;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.winningScore {
+  font-weight: 800;
+}
+
+/* .awayTeam, .homeTeam {
+  width: 210px;
+  display: inline-block;
+}
+
+.homeTeam {
+  margin-left: 20px;
+}
+
+.gameTime {
+  width: 100px;
+  display: inline-block;
+} */

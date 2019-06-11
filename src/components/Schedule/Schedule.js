@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { PropTypes } from 'prop-types';
-
+import React, { useState, useEffect } from "react";
+import { PropTypes } from "prop-types";
 /** Ant Components */
-import { Row, Col, List, Avatar, Skeleton } from 'antd';
+import { Row, Col, List, Skeleton, Typography } from "antd";
 
-import Game from './Game/Game';
-import './Schedule.css';
+import Game from "./Game/Game";
+import "./Schedule.css";
+
+const { Title } = Typography;
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -22,56 +23,114 @@ const groupBy = (list, keyGetter) => {
 };
 
 const Schedule = props => {
-  const [sortBy, setSortBy] = useState('date');
+  const [sortBy, setSortBy] = useState("date");
   const [grouped, setGrouped] = useState([]);
 
   useEffect(() => {
     const groupedByDay = groupBy(props.postseasonGames, game =>
-      new Date(game.gameDate).toDateString(),
+      new Date(game.gameDate).toDateString()
     );
-    setGrouped(groupedByDay);
+    setGrouped(
+      Array.from(groupedByDay).sort((a, b) => new Date(a[0]) - new Date(b[0]))
+    );
   }, [props.postseasonGames]);
 
   return (
-    <div className='schedule'>
-      {Array.from(grouped).map(group => {
+    <div className="schedule">
+      {grouped.map(group => {
+        const date = group[0];
+        const dateGames = group[1];
         return (
-          <div key={group[0]}>
-            <h1>{group[0]}</h1>
-            {group[1].map(game => (
-              <p>{game.gamePk}</p>
-            ))}
+          <div key={date} className="gameDate">
+            <Title level={4} className="gameDateTitle">
+              {date}
+            </Title>
+            <List
+              itemLayout="horizontal"
+              // pagination={{
+              //   onChange: page => {
+              //     console.log(page);
+              //   },
+              //   pageSize: 3,
+              // }}
+              dataSource={dateGames}
+              renderItem={item => {
+                return (
+                  <div key={item.gamePk}>
+                    <Row gutter={16}>
+                      <Col span={24}>
+                        <List.Item>
+                          <Skeleton
+                            avatar
+                            title={false}
+                            loading={item.loading}
+                            active
+                          >
+                            <List.Item.Meta
+                              title={
+                                <a href="https://ant.design">
+                                  {item.description}
+                                </a>
+                              }
+                              description={
+                                <Row gutter={16}>
+                                  <span className="matchupText">
+                                  <Col span={5}>
+                                    <div className="awayTeam">
+                                      {item.teams.away.team.name}
+                                      <span
+                                        className={
+                                          item.teams.away.isWinner
+                                            ? "winningScore"
+                                            : ""
+                                        }
+                                      >
+                                        {" "}
+                                        {item.teams.away.score}
+                                      </span>
+                                    </div>{" "}
+                                    </Col>
+                                    <Col span={5}>
+                                    <div className="homeTeam">
+                                    @ {item.teams.home.team.name}
+                                      <span
+                                        className={
+                                          item.teams.home.isWinner
+                                            ? "winningScore"
+                                            : ""
+                                        }
+                                      >
+                                        {" "}
+                                        {item.teams.home.score}
+                                      </span>
+                                    </div>
+                                    </Col>
+                                    <Col span={2}>
+                                    <div className="gameTime">
+                                      {new Date(item.gameDate).toLocaleString(
+                                        [],
+                                        {
+                                          hour: "2-digit",
+                                          minute: "2-digit"
+                                        }
+                                      )}
+                                    </div>
+                                    </Col>
+                                  </span>
+                                </Row>
+                              }
+                            />
+                          </Skeleton>
+                        </List.Item>
+                      </Col>
+                    </Row>
+                  </div>
+                );
+              }}
+            />
           </div>
         );
       })}
-      {/* <List
-        itemLayout='horizontal'
-        // pagination={{
-        //   onChange: page => {
-        //     console.log(page);
-        //   },
-        //   pageSize: 3,
-        // }}
-        dataSource={props.postseasonGames}
-        renderItem={item => (
-          <Row gutter={16}>
-            <Col span={24}>
-              <List.Item key={item.gamePk} actions={[<a>edit</a>, <a>more</a>]}>
-                <Skeleton avatar title={false} loading={item.loading} active>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' />
-                    }
-                    title={<a href='https://ant.design'>{item.description}</a>}
-                    description='Ant Design, a design language for background applications, is refined by Ant UED Team'
-                  />
-                  <div>{new Date(item.gameDate).toDateString()}</div>
-                </Skeleton>
-              </List.Item>
-            </Col>
-          </Row>
-        )}
-      /> */}
       {/**  Insert selector for sort by date or sort by round */}
       {/* {props.postseasonGames.map(game => {
         return (
@@ -88,7 +147,7 @@ const Schedule = props => {
 
 Schedule.propTypes = {
   postseasonData: PropTypes.object,
-  postseasonGames: PropTypes.array,
+  postseasonGames: PropTypes.array
 };
 
 export default Schedule;
