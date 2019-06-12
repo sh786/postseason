@@ -35,6 +35,23 @@
   margin-left: 15px;
 }
 
+.groupByBtns {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.selectedBtn {
+  background-color: #1890ff !important;
+  color: #fff !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+.unselectedBtn {
+  background-color: #fff !important;
+  color: #1890ff !important;
+  text-shadow: none !important;
+}
+
 .gameDate {
   padding-top: 20px;
 }

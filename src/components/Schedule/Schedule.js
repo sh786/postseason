@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { PropTypes } from 'prop-types';
+import React, { useState, useEffect } from "react";
+import { PropTypes } from "prop-types";
 /** Ant Components */
-import { Row, Col, List, Skeleton, Typography } from 'antd';
+import { Row, Col, Button, List, Typography } from "antd";
 
-import './Schedule.css';
+import "./Schedule.css";
 
 const { Title } = Typography;
 
@@ -21,121 +21,165 @@ const groupBy = (list, keyGetter) => {
   return map;
 };
 
-const Schedule = props => {
-  const [sortBy, setSortBy] = useState('date');
-  const [grouped, setGrouped] = useState([]);
+class Schedule extends React.Component {
+  constructor() {
+    super();
 
-  useEffect(() => {
-    const groupedByDay = groupBy(props.postseasonGames, game =>
-      new Date(game.gameDate).toDateString(),
+    this.state = {
+      dateGrouped: [],
+      roundGrouped: [],
+      grouped: [],
+      isGroupedByRound: false
+    };
+  }
+
+  componentDidMount() {
+    const dateGrouped = Array.from(
+      groupBy(this.props.postseasonGames, game =>
+        new Date(game.gameDate).toDateString()
+      )
+    ).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+
+    const roundGrouped = Array.from(
+      groupBy(this.props.postseasonGames, game => game.seriesDescription)
+    ).sort((a, b) => this.roundSortOrder.indexOf(a[0]) - this.roundSortOrder.indexOf(b[0]));
+
+    this.setState({
+      dateGrouped: dateGrouped,
+      grouped: dateGrouped,
+      roundGrouped: roundGrouped
+    });
+  }
+
+  roundSortOrder = ['Regular Season', 'AL Wild Card Game', 'NL Wild Card Game', 'AL Division Series', 'NL Division Series', 'AL Championship Series', 'NL Championship Series', 'World Series'];
+
+  handleRoundClick = event => {
+    this.setState({ grouped: this.state.roundGrouped, isGroupedByRound: true });
+  };
+
+  handleDateClick = event => {
+    this.setState({ grouped: this.state.dateGrouped, isGroupedByRound: false });
+  };
+
+  render() {
+    return (
+      <div className="schedule">
+        <Title level={3} className="scheduleTitle">
+          <span>Postseason Schedule</span>
+        </Title>
+        <div className="groupByBtns">
+          <Button.Group size="large">
+            <Button
+              type="primary"
+              className={!this.state.isGroupedByRound ? "selectedBtn" : "unselectedBtn"}
+              onClick={this.handleDateClick}
+            >
+              By Date
+            </Button>
+            <Button
+              type="default"
+              className={this.state.isGroupedByRound ? "selectedBtn" : "unselectedBtn"}
+              onClick={this.handleRoundClick}
+            >
+              By Round
+            </Button>
+          </Button.Group>
+        </div>
+        {this.state.grouped.map(group => {
+          const date = group[0];
+          const dateGames = group[1];
+          return (
+            <div key={date} className="gameDate">
+              <Title level={4} className="gameDateTitle">
+                {date}
+              </Title>
+              <List
+                itemLayout="horizontal"
+                dataSource={dateGames}
+                renderItem={item => {
+                  return <Game game={item} />;
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
     );
-    setGrouped(Array.from(groupedByDay).sort((a, b) => new Date(a[0]) - new Date(b[0])));
-  }, [props.postseasonGames]);
-
-  return (
-    <div className='schedule'>
-      <Title level={3} className='scheduleTitle'>
-        <span>Postseason Schedule</span>
-      </Title>
-      {grouped.map(group => {
-        const date = group[0];
-        const dateGames = group[1];
-        return (
-          <div key={date} className='gameDate'>
-            <Title level={4} className='gameDateTitle'>
-              {date}
-            </Title>
-            <List
-              itemLayout='horizontal'
-              dataSource={dateGames}
-              renderItem={item => {
-                return <Game item={item} />;
-              }}
-            />
-          </div>
-        );
-      })}
-      {/**  Insert selector for sort by date or sort by round */}
-      {/* {props.postseasonGames.map(game => {
-        return (
-          <Row gutter={16}>
-            <Col span={24}>
-              <Game gameData={game} key={game.gamePk} />
-            </Col>
-          </Row>
-        );
-      })} */}
-    </div>
-  );
-};
+  }
+}
 
 const Game = props => {
   return (
-    <div key={props.item.gamePk}>
+    <div key={props.game.gamePk}>
       <Row gutter={16}>
         <Col span={24}>
           <List.Item>
-            <Skeleton avatar title={false} loading={props.item.loading} active>
-              <List.Item.Meta
-                title={props.item.description}
-                description={
-                  <Row gutter={16}>
-                    <span className='matchupText'>
-                      <Col span={4}>
-                        <div className='awayTeam'>
-                          {props.item.teams.away.team.name}
-                          <span className={props.item.teams.away.isWinner ? 'winningScore' : ''}>
-                            {' '}
-                            {props.item.teams.away.score}
-                          </span>
-                        </div>{' '}
-                      </Col>
-                      <Col span={1}>@</Col>
-                      <Col span={4}>
-                        <div className='homeTeam'>
-                          {props.item.teams.home.team.name}
-                          <span className={props.item.teams.home.isWinner ? 'winningScore' : ''}>
-                            {' '}
-                            {props.item.teams.home.score}
-                          </span>
+            <List.Item.Meta
+              title={props.game.description}
+              description={
+                <Row gutter={16}>
+                  <span className="matchupText">
+                    <Col span={5}>
+                      <div className="awayTeam">
+                        {props.game.teams.away.team.name}
+                        <span
+                          className={
+                            props.game.teams.away.isWinner ? "winningScore" : ""
+                          }
+                        >
+                          {" "}
+                          {props.game.teams.away.score}
+                        </span>
+                      </div>
+                    </Col>
+                    <Col span={5}>
+                      <div className="homeTeam">
+                        @ {props.game.teams.home.team.name}
+                        <span
+                          className={
+                            props.game.teams.home.isWinner ? "winningScore" : ""
+                          }
+                        >
+                          {" "}
+                          {props.game.teams.home.score}
+                        </span>
+                      </div>
+                    </Col>
+                    <Col span={2}>
+                      <div className="gameTime">
+                        {new Date(props.game.gameDate).toLocaleString([], {
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
+                      </div>
+                    </Col>
+                    <Col span={4}>
+                      {"winner" in props.game.decisions ? (
+                        <div className="winningPitcher">
+                          W: {props.game.decisions.winner.initLastName}
                         </div>
-                      </Col>
-                      <Col span={2}>
-                        <div className='gameTime'>
-                          {new Date(props.item.gameDate).toLocaleString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
+                      ) : (
+                        ""
+                      )}
+                    </Col>
+                    <Col span={4}>
+                      {"loser" in props.game.decisions ? (
+                        <div className="losingPitcher">
+                          L: {props.game.decisions.loser.initLastName}
                         </div>
-                      </Col>
-                      <Col span={3}>
-                        {'winner' in props.item.decisions ? (
-                          <div className='winningPitcher'>
-                            W: {props.item.decisions.winner.initLastName + ' '}
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                      </Col>
-                      <Col span={3}>
-                        {'loser' in props.item.decisions ? (
-                          <div className='losingPitcher'>
-                            W: {props.item.decisions.loser.initLastName + ' '}
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                      </Col>
-                      <Col span={3}>
-                        {'save' in props.item.decisions
-                          ? 'SV: ' + props.item.decisions.winner.initLastName
-                          : ''}
-                      </Col>
-                    </span>
-                  </Row>
-                }
-              />
-            </Skeleton>
+                      ) : (
+                        ""
+                      )}
+                    </Col>
+                    <Col span={4}>
+                      {"save" in props.game.decisions
+                        ? "SV: " + props.game.decisions.winner.initLastName
+                        : ""}
+                    </Col>
+                  </span>
+                </Row>
+              }
+            />
           </List.Item>
         </Col>
       </Row>
@@ -145,7 +189,11 @@ const Game = props => {
 
 Schedule.propTypes = {
   postseasonData: PropTypes.object,
-  postseasonGames: PropTypes.array,
+  postseasonGames: PropTypes.array
+};
+
+Game.propTypes = {
+  game: PropTypes.object
 };
 
 export default Schedule;

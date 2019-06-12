@@ -8,7 +8,7 @@ class App extends React.Component {
   constructor() {
     super();
 
-    // Initialize empty state for postseasonData and
+    // Initialize empty state for postseasonData and postseasonGames
     this.state = {
       postseasonData: {},
       postseasonGames: [],
