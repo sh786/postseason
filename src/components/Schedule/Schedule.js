@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { PropTypes } from "prop-types";
 /** Ant Components */
 import { Row, Col, Button, List, Typography } from "antd";
@@ -65,7 +65,7 @@ class Schedule extends React.Component {
     return (
       <div className="schedule">
         <Title level={3} className="scheduleTitle">
-          <span>Postseason Schedule</span>
+          <span>2018 MLB Postseason Schedule</span>
         </Title>
         <div className="groupByBtns">
           <Button.Group size="large">
@@ -97,7 +97,7 @@ class Schedule extends React.Component {
                 itemLayout="horizontal"
                 dataSource={dateGames}
                 renderItem={item => {
-                  return <Game game={item} />;
+                  return <Game game={item} isGroupedByRound={this.state.isGroupedByRound} />;
                 }}
               />
             </div>
@@ -115,7 +115,7 @@ const Game = props => {
         <Col span={24}>
           <List.Item>
             <List.Item.Meta
-              title={props.game.description}
+              title={props.game.description + (props.isGroupedByRound ? ' - ' + new Date(props.game.gameDate).toLocaleDateString() : '')}
               description={
                 <Row gutter={16}>
                   <span className="matchupText">
@@ -145,14 +145,6 @@ const Game = props => {
                         </span>
                       </div>
                     </Col>
-                    <Col span={2}>
-                      <div className="gameTime">
-                        {new Date(props.game.gameDate).toLocaleString([], {
-                          hour: "2-digit",
-                          minute: "2-digit"
-                        })}
-                      </div>
-                    </Col>
                     <Col span={4}>
                       {"winner" in props.game.decisions ? (
                         <div className="winningPitcher">
@@ -175,6 +167,14 @@ const Game = props => {
                       {"save" in props.game.decisions
                         ? "SV: " + props.game.decisions.winner.initLastName
                         : ""}
+                    </Col>
+                    <Col span={2}>
+                      <div className="gameTime">
+                        {new Date(props.game.gameDate).toLocaleString([], {
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
+                      </div>
                     </Col>
                   </span>
                 </Row>
