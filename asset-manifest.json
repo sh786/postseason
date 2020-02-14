@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/postseason/static/css/main.7f946263.chunk.css",
+    "main.js": "/postseason/static/js/main.98ac2bde.chunk.js",
+    "main.js.map": "/postseason/static/js/main.98ac2bde.chunk.js.map",
+    "runtime~main.js": "/postseason/static/js/runtime~main.73339566.js",
+    "runtime~main.js.map": "/postseason/static/js/runtime~main.73339566.js.map",
+    "static/css/2.ab7e5612.chunk.css": "/postseason/static/css/2.ab7e5612.chunk.css",
+    "static/js/2.9743aa79.chunk.js": "/postseason/static/js/2.9743aa79.chunk.js",
+    "static/js/2.9743aa79.chunk.js.map": "/postseason/static/js/2.9743aa79.chunk.js.map",
+    "index.html": "/postseason/index.html",
+    "precache-manifest.6b3322b3e38e095c3f3e34fa45c54c08.js": "/postseason/precache-manifest.6b3322b3e38e095c3f3e34fa45c54c08.js",
+    "service-worker.js": "/postseason/service-worker.js",
+    "static/css/2.ab7e5612.chunk.css.map": "/postseason/static/css/2.ab7e5612.chunk.css.map",
+    "static/css/main.7f946263.chunk.css.map": "/postseason/static/css/main.7f946263.chunk.css.map"
+  }
+}
